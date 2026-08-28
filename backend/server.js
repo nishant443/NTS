@@ -14,31 +14,26 @@ connectDB();
 
 const app = express();
 
-// Security & parsing middleware
-app.use(helmet());
-
-// CORS configuration for Vercel serverless
+// CORS configuration MUST come before helmet on Vercel
 const corsOptions = {
-  origin: function(origin, callback) {
-    const allowedOrigins = [
-      'http://localhost:5173',
-      'http://localhost:3000',
-      process.env.CLIENT_URL
-    ].filter(Boolean);
-    
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(null, true); // Allow for preflight requests in production
-    }
-  },
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://frontend-seven-pi-28.vercel.app',
+    'https://frontend-git-main-nishant443s-projects.vercel.app',
+    process.env.CLIENT_URL
+  ].filter(Boolean),
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Handle preflight requests for all routes
+app.options('*', cors(corsOptions)); // Preflight handler for all routes
+
+// Security middleware - after CORS
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
