@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-muted text-secondary font-sans antialiased;
+    background-image: linear-gradient(135deg, rgba(234, 240, 255, 0.8), rgba(255, 255, 255, 0.96) 45%, rgba(243, 245, 248, 0.95));
+    background-attachment: fixed;
+  }
+
+  .sidebar {
+    position: relative;
+    background-color: #10233f !important;
+    background-image: linear-gradient(145deg, rgba(7, 93, 245, 0.38), transparent 42%), repeating-linear-gradient(135deg, transparent 0 28px, rgba(255, 255, 255, 0.035) 29px 30px);
+    box-shadow: 10px 0 30px rgba(16, 35, 63, 0.16);
+  }
+
+  .sidebar::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(#075df5, transparent 35%, #075df5);
+    opacity: 0.8;
+  }
+
+  .sidebar .nav-link {
+    text-shadow: 0 1px 1px rgba(16, 35, 63, 0.18);
+  }
+
+  .sidebar .nav-link.bg-white {
+    text-shadow: none;
+  }
+
+  .sidebar nav {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-surface rounded-card shadow-card p-5 transition-all duration-200;
+    border: 1px solid rgba(7, 93, 245, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 42px;
+    height: 3px;
+    background: #075df5;
+    transform: skewX(-35deg) translateX(10px);
+    opacity: 0.75;
+  }
+  .card:hover {
+    @apply shadow-soft;
+    transform: translateY(-2px);
+  }
+  .card h1, .card h2, .card h3 {
+    letter-spacing: -0.01em;
+  }
+  .btn-primary {
+    @apply bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-primary-dark hover:shadow-soft active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-secondary {
+    @apply bg-white border border-primary/20 text-secondary px-4 py-2 rounded-lg font-medium hover:bg-accent hover:border-primary/40 active:scale-95 transition-all;
+  }
+  .input-field {
+    @apply w-full px-3 py-2 border border-primary/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-sm transition-shadow;
+  }
+  .label {
+    @apply block text-sm font-medium text-secondary mb-1;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Rajdhani', 'Inter', sans-serif;
+    letter-spacing: 0.01em;
+  }
+  .skeleton {
+    @apply animate-pulse bg-gray-200 rounded;
+  }
+  .page-enter {
+    animation: page-enter 280ms ease-out both;
+  }
+}
+
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
