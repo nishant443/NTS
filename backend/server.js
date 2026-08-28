@@ -14,12 +14,13 @@ connectDB();
 
 const app = express();
 
-// CORS configuration MUST come before helmet on Vercel
+// CORS configuration MUST come before everything else on Vercel
 const corsOptions = {
   origin: [
     'http://localhost:5173',
     'http://localhost:3000',
     'https://frontend-seven-pi-28.vercel.app',
+    'https://frontend-git-main-nishart443-projects.vercel.app',
     'https://frontend-git-main-nishant443s-projects.vercel.app',
     process.env.CLIENT_URL
   ].filter(Boolean),
@@ -30,7 +31,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Preflight handler for all routes
+// Handle preflight requests explicitly BEFORE any other middleware
+app.options('*', cors(corsOptions));
 
 // Security middleware - after CORS
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
@@ -40,8 +42,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(mongoSanitize());
 if (process.env.NODE_ENV !== 'production') app.use(morgan('dev'));
 
-// Rate limiting (applies to all /api routes)
-const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 300 });
+// Rate limiting - skip for OPTIONS requests (preflight)
+const limiter = rateLimit({ 
+  windowMs: 15 * 60 * 1000, 
+  max: 300,
+  skip: (req) => req.method === 'OPTIONS' // Don't rate limit preflight
+});
 app.use('/api', limiter);
 
 // Static files (uploaded documents)
