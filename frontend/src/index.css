@@ -5,8 +5,13 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
   body {
-    @apply bg-muted text-secondary font-sans antialiased;
+    @apply bg-muted text-secondary font-sans antialiased overflow-x-hidden;
     background-image: linear-gradient(135deg, rgba(234, 240, 255, 0.8), rgba(255, 255, 255, 0.96) 45%, rgba(243, 245, 248, 0.95));
     background-attachment: fixed;
   }
@@ -45,10 +50,16 @@
 
 @layer components {
   .card {
-    @apply bg-surface rounded-card shadow-card p-5 transition-all duration-200;
+    @apply bg-surface rounded-card shadow-card p-4 sm:p-5 transition-all duration-200;
     border: 1px solid rgba(7, 93, 245, 0.1);
     position: relative;
     overflow: hidden;
+  }
+
+  @media (max-width: 640px) {
+    .card {
+      @apply rounded-xl;
+    }
   }
   .card::before {
     content: '';
@@ -77,8 +88,23 @@
   .input-field {
     @apply w-full px-3 py-2 border border-primary/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-sm transition-shadow;
   }
+
+  @media (max-width: 640px) {
+    .input-field {
+      @apply py-2.5 text-base; /* Larger touch target on mobile */
+    }
+  }
+
   .label {
-    @apply block text-sm font-medium text-secondary mb-1;
+    @apply block text-xs sm:text-sm font-medium text-secondary mb-1;
+  }
+
+  .dashboard-shell {
+    overflow-x: hidden;
+  }
+
+  .dashboard-shell * {
+    max-width: 100vw;
   }
   h1, h2, h3, h4 {
     font-family: 'Rajdhani', 'Inter', sans-serif;
