@@ -53,6 +53,7 @@ app.use('/api/quotations', require('./routes/quotationRoutes'));
 app.use('/api/purchase-orders', require('./routes/purchaseOrderRoutes'));
 app.use('/api/invoices', require('./routes/invoiceRoutes'));
 app.use('/api/documents', require('./routes/documentRoutes'));
+app.use('/api/company-documents', require('./routes/companyDocumentRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
 app.use('/api/dashboard', require('./routes/dashboardRoutes'));
 
