@@ -19,6 +19,21 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+const ensureCloudinaryConfigured = (req, res, next) => {
+  const hasCloudinaryConfig = process.env.CLOUDINARY_CLOUD_NAME &&
+    process.env.CLOUDINARY_API_KEY &&
+    process.env.CLOUDINARY_API_SECRET;
+
+  if (!hasCloudinaryConfig) {
+    return res.status(500).json({
+      success: false,
+      message: 'Cloudinary is not configured. Add CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET to the backend environment.',
+    });
+  }
+
+  next();
+};
+
 // Multer memory storage for Cloudinary
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -68,7 +83,7 @@ const uploadToCloudinary = (req, res, next) => {
 };
 
 router.use(protect);
-router.post('/', authorize('admin'), upload.single('file'), uploadToCloudinary, uploadCompanyDocument);
+router.post('/', authorize('admin'), ensureCloudinaryConfigured, upload.single('file'), uploadToCloudinary, uploadCompanyDocument);
 router.get('/', getCompanyDocuments);
 router.get('/type/:type', getCompanyDocumentsByType);
 router.put('/:id', authorize('admin'), updateCompanyDocument);
