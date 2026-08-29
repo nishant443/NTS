@@ -9,15 +9,47 @@ exports.createCustomer = asyncHandler(async (req, res) => {
 exports.getCustomers = asyncHandler(async (req, res) => {
   const { search, status, page = 1, limit = 20 } = req.query;
   const query = {};
+
   if (status) query.status = status;
-  if (search) query.$text = { $search: search };
+
+  if (search && String(search).trim()) {
+    const searchTerms = String(search)
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+
+    const searchableFields = [
+      'companyName',
+      'contactPerson',
+      'email',
+      'phone',
+      'alternatePhone',
+      'city',
+      'state',
+      'industry',
+      'gstNumber',
+      'panNumber',
+      'status',
+    ];
+
+    const escapedTerms = searchTerms.map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+
+    query.$or = escapedTerms.flatMap((term) =>
+      searchableFields.map((field) => ({ [field]: { $regex: term, $options: 'i' } }))
+    );
+  }
+
+  const pageNumber = Math.max(Number(page) || 1, 1);
+  const limitNumber = Math.max(Number(limit) || 20, 1);
 
   const customers = await Customer.find(query)
-    .skip((page - 1) * limit)
-    .limit(Number(limit))
+    .skip((pageNumber - 1) * limitNumber)
+    .limit(limitNumber)
     .sort('-createdAt');
+
   const total = await Customer.countDocuments(query);
-  res.json({ success: true, count: customers.length, total, page: Number(page), customers });
+
+  res.json({ success: true, count: customers.length, total, page: pageNumber, customers });
 });
 
 exports.getCustomer = asyncHandler(async (req, res) => {
