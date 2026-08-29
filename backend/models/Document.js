@@ -10,6 +10,7 @@ const documentSchema = new mongoose.Schema(
     },
     name: String,
     fileUrl: { type: String, required: true },
+    cloudinaryPublicId: String, // Store public ID for deletion
     uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true }
